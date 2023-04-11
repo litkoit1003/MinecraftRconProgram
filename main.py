@@ -1,3 +1,4 @@
+import sys
 import io
 import time
 from mcrcon import MCRcon
@@ -9,8 +10,8 @@ print("██╔══██╗██║░░██╗██║░░██║�
 print("██║░░██║╚█████╔╝╚█████╔╝██║░╚███║")
 print("╚═╝░░╚═╝░╚════╝░░╚════╝░╚═╝░░╚══╝")
 print()
-print("Version 1.1 By litkoit")
-print("Reading a file...")
+print("Version 1.2 By litkoit")
+print("Чтение файла...")
 with open("db.txt", mode="at") as f:
     f.close()
 with open("db.txt", mode="rt") as f:
@@ -21,41 +22,48 @@ with open("db.txt", mode="rt") as f:
         ipf = ipf[:-1]
         portf = portf[:-1]
         passf = passf[:-1]
-        print("Reading successful!")
+        print("Чтение успешно!")
         print("ip: "+ipf)
         print("port: "+portf)
         print("pass: "+passf)
         f.close()
-        res = input("Apply settings? (y or n):")
+        res = input("Применить настройки? (y or n):")
         if res == "y":
             fileread = 1
         else:
-            print("Cancel changes...")
+            print("Отмена изменений...")
     except io.UnsupportedOperation:
-        print("File read error!")
+        print("Ошибка чтения файла!")
 if fileread == 0:
     with open("db.txt", mode="wt") as f:
         Ip = input("IP:")
-        Port = input("Port:")
-        Pass = input("Password:")
+        Port = input("Порт:")
+        Pass = input("Пороль:")
         mc = MCRcon(Ip, Pass, int(Port))
-        print("Writing to file...")
+        print("Запись в файл...")
         filedata = [Ip, Port, Pass]
         f.write(filedata[0] + "\n")
         f.write(filedata[1] + "\n")
         f.write(filedata[2] + "\n")
         f.close()
-        print("The file has been written!")
+        print("Файл записан!")
 else:
     mc = MCRcon(ipf, passf, int(portf))
-print("Connecting...")
-mc.connect()
-print("Connected!")
-print("Write quitt to exit")
+print("Подключаюсь...")
+try:
+    mc.connect()
+except BaseException:
+    print("Выходим...")
+    time.sleep(2)
+    print("Ошибка Подключения!")
+    input("Нажмите ENTER для продолжения")
+    sys.exit("Error 1")
+print("Подключено!")
+print("Введите quitt для выхода")
 while 1 == 1:
     Comm = input(">")
     if Comm == "quitt":
-        print("Exiting...")
+        print("Выходим...")
         mc.disconnect()
         break
     out = mc.command(Comm)
